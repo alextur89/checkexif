@@ -2,12 +2,24 @@
 import sys
 import piexif
 from PIL import Image
-
+import argparse
+import datetime
 
 if __name__ == '__main__':
 
-    fname = sys.argv[1]
-    todate = sys.argv[2]
+    parser = argparse.ArgumentParser(description='Change date in image metadata.')
+    parser.add_argument('--filename', '-f', dest='filename', type=open, help='File to be change')
+    parser.add_argument('--date', '-d', dest='date', help='New date')
+
+    args = parser.parse_args()
+    print(args)
+
+    fname = args.filename.name
+    if args.date:
+        todate = str(args.date)
+    else:
+        currentDT = datetime.datetime.now()
+        todate=str(currentDT)
 
     try:
         img = Image.open(fname)
