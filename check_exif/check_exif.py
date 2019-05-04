@@ -3,22 +3,26 @@ import sys
 import piexif
 from PIL import Image
 
-fname = sys.argv[1]
-todate = sys.argv[2]
-img = Image.open(fname)
-exif_dict = piexif.load(img.info['exif'])
 
-exif_dict['Exif'][36867] = todate
-exif_dict['Exif'][36868] = todate
+if __name__ == '__main__':
 
-print(exif_dict['Interop'])
+    fname = sys.argv[1]
+    todate = sys.argv[2]
 
-exif_dict['0th'][306] = todate
+    try:
+        img = Image.open(fname)
+    except IOError:
+        print ("File not exist")
+        sys.exit(-1)
 
-dateForEdit = exif_dict['Exif'][36867]
-dateForCreate = exif_dict['Exif'][36868]
+    exif_dict = piexif.load(img.info['exif'])
 
-piexif.insert(piexif.dump(exif_dict), fname)
+    try:
+        exif_dict['Exif'][36867] = todate
+        exif_dict['Exif'][36868] = todate
+        exif_dict['0th'][306] = todate
+    except KeyError:
+        print ("Error in file's metadata")
+        sys.exit(-1)
 
-print(dateForEdit)
-print(dateForCreate)
+    piexif.insert(piexif.dump(exif_dict), fname)
