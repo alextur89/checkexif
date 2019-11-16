@@ -21,7 +21,12 @@ if __name__ == '__main__':
             print ("File not exist")
             sys.exit(-1)
 
-        exif_dict = piexif.load(img.info['exif'])
+        try:
+            exif_dict = piexif.load(img.info['exif'])
+        except KeyError:
+            print ('No exif data')
+            sys.exit(0)
+
 
         if args.show:
             print ("Initial date: " + str(exif_dict['Exif'][36867]) )
